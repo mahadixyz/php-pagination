@@ -4,21 +4,32 @@
 
     class Main
     {
+        // Database Variables
         private $host = 'localhost';
         private $user = 'root';
         private $password = '';
         private $db = 'pagination';
         
+        // User Defined Setting variables
         private $perPage = 5;
         private $errmsg;
         private $sql;
         protected $connection;
 
+        /**
+         * Constructor Method
+         * Invoke connectDB() method on object instantiation
+         */
         public function __construct()
         {
-            $this->connectDB();
-            
+            $this->connectDB();            
         }
+
+        /**
+         * connectDB() method
+         * Connect with Database
+         * @return void
+         */
         public function connectDB()
         {
             try
@@ -32,6 +43,12 @@
             }
         }
 
+        /**
+         * viewUsers() Method
+         * Return User data form database with pagination limit and offset
+         * @param int $pageNum
+         * @return void
+         */
         public function viewUsers($pageNum)
         {
             $offset = (int) ($pageNum-1) * $this->perPage;
@@ -58,12 +75,18 @@
             }
             catch(PDOException $Exception)
             {
+                // Set error message on SESSION
                 $_SESSION['err'] = "error: ".$Exception->getMessage();                
                 return false;
             }  
 
         }
 
+        /**
+         * totalPage() Method
+         * This method retrun total page number on Pagination
+         * @return int $totalPageNo
+         */
         public function totalPage()
         {
             $this->sql = $this->connection->prepare('SELECT * FROM user');
@@ -80,6 +103,7 @@
             }
             catch(PDOException $Exception)
             {
+                // Set error message on SESSION
                 $this->errmsg = $Exception->getMessage();
                 $_SESSION['err'] = "Unexpected Error Occured. Please try again Later.<br> Error: ".$this->errmsg;
                 return false;

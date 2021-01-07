@@ -1,7 +1,9 @@
 <?php
+    // require Main.php class to this file and create object from it
     require_once 'class/Main.php';
     $user = new Main;
     
+    // Get page index from url, if nothing found, set it to 1
      if(isset($_GET['page']))
      {
          $page = $_GET['page'];
@@ -33,15 +35,19 @@
             <div class="col-8 mt-5 mx-auto">
                 <div class="border p-3">
                 <?php    
+                    // If any error message set into session, show it as an alert!
                     if(isset($_SESSION['err']))
                     {
                         echo '<div class="alert alert-danger">'.$_SESSION['err'].'</div>';
+                        
+                        // Unset the error message from session, after displaying
                         unset($_SESSION['err']);
                     }
                 ?>
 
                     <!-- Data from the Database -->
-                    <table class="table">
+                    <h2 class="display-5 text-center text-primary mb-3">View Registered Users</h2>
+                    <table class="table">                        
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -53,10 +59,13 @@
                         <tbody>
 
                 <?php
+                    // Call the viewUsers() method to display data from the database
                     $result = $user->viewUsers($page);
+
+                    // Call the totalPage() method to find total page on pagination
                     $totalPage = $user->totalPage();
                     
-                    
+                    // If result is not empty, means if any records found on database show it
                     if($result != false)
                     {
                         foreach($result as $data)
@@ -74,6 +83,7 @@
                     else
                     {
                 ?>
+                            <!-- If $result = false, means No records found on database -->
                             <tr>
                                 <td colspan="4">No Data Found</td>
                             </tr>
@@ -87,6 +97,7 @@
                     <!-- Pagination -->
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
+                            <!-- $page is the page number of pagination. if it is 1 or less, disable the Previous button  -->
                             <li class="page-item <?php if($page <= 1){ echo 'disabled'; } ?>">
                                 <a class="page-link" href="index.php?page=<?=$page-1?>">Previous</a>
                             </li>
@@ -94,6 +105,7 @@
                                 for($i = 1; $i <= $totalPage; $i++)
                                 {
                                     ?>
+                                    <!-- Add active effect if page number on URL is equal to current page link  -->
                                     <li class="page-item <?php if($i == $page){echo 'active';}?>"> 
                                         <a class="page-link" href="index.php?page=<?=$i?>"><?=$i?></a>
                                     </li>
@@ -101,7 +113,7 @@
                                 }
                             ?>
                         
-
+                            <!-- $page is the page number of pagination. if it is Equal to last page, disable the Next button  -->
                             <li class="page-item <?php if($page >= $totalPage){ echo 'disabled'; } ?>"> 
                                 <a class="page-link" href="index.php?page=<?=$page+1?>">Next</a>
                             </li>
